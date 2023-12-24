@@ -1,0 +1,52 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "maps.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInEditor": 1
+        },
+        "maps.json": {
+            "expandedGroupLayers": [
+                5
+            ],
+            "scale": 1.5,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 347.33333333333337,
+                "y": 236.66666666666669
+            }
+        },
+        "maps.json#control": {
+            "scaleInDock": 1
+        },
+        "maps.json#terrain": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/mmoya/Repositorios/juegos/helbreath-lite/helbreath-lite-client/src/assets/tilesets",
+    "map.height": 30,
+    "map.lastUsedFormat": "json",
+    "map.renderOrder": null,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 40,
+    "openFiles": [
+        "maps.json"
+    ],
+    "project": "maps.tiled-project",
+    "property.type": "object",
+    "recentFiles": [
+        "maps.json"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

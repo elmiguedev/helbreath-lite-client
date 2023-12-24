@@ -3,27 +3,29 @@ import io, { Socket } from "socket.io-client";
 import { Player } from "../entities/Player";
 import { WorldStatus } from "../entities/WorldStatus";
 import { WorldMap } from "../entities/WorldMap";
+import { WorldMapChange } from "../entities/WorldMapChange";
 
 export class MainScene extends Phaser.Scene {
   private players: Record<string, Player>;
   private mapLabel: Phaser.GameObjects.Text;
-  private portals: Phaser.GameObjects.Rectangle[];
+  private tilemap: Phaser.Tilemaps.Tilemap;
   private socket: Socket;
 
   constructor() {
     super("MainScene");
 
     this.players = {};
-    this.portals = [];
   }
 
   create() {
     this.createHud();
     this.createSocket();
-    this.createInput();
 
 
+  }
 
+  update() {
+    this.checkInput();
   }
 
   createHud() {
@@ -32,7 +34,11 @@ export class MainScene extends Phaser.Scene {
 
   createSocket() {
     this.socket = io("ws://localhost:3000");
+
     this.socket.on("world:state", (worldStatus: WorldStatus) => {
+      if (!this.tilemap) {
+        this.resetWorld(worldStatus.world.id)
+      }
       this.updateWorld(worldStatus);
     })
     this.socket.on("player:disconnected", (id) => {
@@ -42,6 +48,7 @@ export class MainScene extends Phaser.Scene {
       delete this.players[id];
     })
     this.socket.on("player:connected", (data) => {
+      // TODO: este deberia ser solo creacion
       if (!this.players[data.id]) {
         this.players[data.id] = new Player({
           id: data.id,
@@ -51,38 +58,33 @@ export class MainScene extends Phaser.Scene {
         })
       }
     });
-    this.socket.on("world:change", (change) => {
-      this.resetWorld();
+    this.socket.on("world:change", (change: WorldMapChange) => {
+      console.log(change)
+      this.resetWorld(change.toWorldMapId);
     })
   }
 
-  createInput() {
-    this.input.on("pointerdown", (pointer) => {
+  checkInput() {
+    if (this.input.mousePointer.isDown) {
       this.socket.emit("player:move", {
-        x: pointer.downX,
-        y: pointer.downY
+        x: this.input.mousePointer.worldX,
+        y: this.input.mousePointer.worldY
       })
-    })
+    }
   }
 
-  resetWorld() {
+  resetWorld(worldMapId: string) {
     this.clearWorld();
+    this.createMap(worldMapId);
     this.clearPlayers();
   }
 
   updateWorld(worldStatus: WorldStatus) {
-    this.updateWorldMap(worldStatus.world);
     this.updatePlayers(worldStatus.players);
   }
 
-  updateWorldMap(worldMap: WorldMap) {
-    this.mapLabel.setText(worldMap.name);
-    if (this.portals.length === 0) {
-      this.createMap(worldMap)
-    }
-  }
-
   updatePlayers(players: Player[]) {
+    // TODO: esto deberia ser solo movimiento
     players.forEach((player: any) => {
       if (!this.players[player.id]) {
         this.players[player.id] = new Player({
@@ -91,6 +93,9 @@ export class MainScene extends Phaser.Scene {
           position: player.position,
           scene: this
         })
+        if (player.id === this.socket.id) {
+          this.cameras.main.startFollow(this.players[player.id].body);
+        }
       } else {
         this.players[player.id].setPosition(player.position);
       }
@@ -106,16 +111,12 @@ export class MainScene extends Phaser.Scene {
 
   clearWorld() {
     this.mapLabel.setText("");
-    this.portals.forEach((portal) => {
-      portal.destroy();
-    });
-    this.portals = [];
+    this.tilemap && this.tilemap.destroy();
   }
 
-  createMap(worldMap: WorldMap) {
-    worldMap.portals.forEach((portal) => {
-      const p = this.add.rectangle(portal.position.x, portal.position.y, 60, 60, 0xffff00, 0.5).setOrigin(0);
-      this.portals.push(p);
-    })
+  createMap(worldMapId: string) {
+    this.tilemap = this.add.tilemap("map");
+    const terrainTileset = this.tilemap.addTilesetImage("terrain", "terrain");
+    const bgLayer = this.tilemap.createLayer(`${worldMapId}/bg_1`, terrainTileset, 0, 0).setDepth(1);
   }
 }

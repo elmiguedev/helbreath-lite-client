@@ -9,7 +9,7 @@ export interface PlayerProps {
 
 export class Player {
   private scene: Phaser.Scene;
-  private body: Phaser.GameObjects.Rectangle;
+  public body: Phaser.GameObjects.Rectangle;
   private id: string;
   private name: string;
   private position: Position;
@@ -36,9 +36,10 @@ export class Player {
     this.body = this.scene.add.rectangle(
       this.position.x,
       this.position.y,
-      30,
-      30,
+      32,
+      32,
       0xff0000
-    )
+    );
+    this.body.setDepth(2);
   }
 }

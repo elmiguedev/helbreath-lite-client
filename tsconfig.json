@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "scripthost"
+    ],
+    "moduleResolution": "Node",
+    // "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "typeRoots": [
+      "node_module/phaser/types",
+      "declarations"
+    ],
+    // "noEmit": true,
+    // // "noUnusedLocals": true,
+    // // "noUnusedParameters": false,
+    // // "noImplicitReturns": true,
+    // // "strictPropertyInitialization": false,
+    "paths": {
+      "~/*": [
+        "./*"
+      ]
+    },
+  },
+  "include": [
+    "src/**/*",
+    "declarations.d.ts",
+  ]
+}
