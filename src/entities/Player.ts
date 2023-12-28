@@ -7,39 +7,42 @@ export interface PlayerProps {
   scene: Phaser.Scene;
 }
 
-export class Player {
-  private scene: Phaser.Scene;
-  public body: Phaser.GameObjects.Rectangle;
-  private id: string;
-  private name: string;
-  private position: Position;
+export class Player extends Phaser.GameObjects.Sprite {
+
+  public target: any;
 
   constructor(props: PlayerProps) {
-    this.scene = props.scene;
-    this.id = props.id;
-    this.name = props.name;
-    this.position = props.position;
+    super(props.scene, props.position.x, props.position.y, "player");
+    this.scene.add.existing(this);
 
-    this.createBody();
+    this.setDepth(10);
+    this.anims.createFromAseprite("player");
+    this.playIdleAnimation();
   }
 
-  public destroy() {
-    this.body.destroy();
+  public update() {
+    if (this.target) {
+      this.playWalkAnimation()
+      this.setFlipX(this.target.x < this.x);
+    } else {
+      this.playIdleAnimation();
+    }
+    this.setDepth(this.y)
   }
 
-  public setPosition(position: Position) {
-    this.position = position;
-    this.body.setPosition(position.x, position.y);
+  private playIdleAnimation() {
+    this.anims.play({
+      key: "idle",
+      repeat: -1,
+      frameRate: 2
+    }, true)
   }
 
-  private createBody() {
-    this.body = this.scene.add.rectangle(
-      this.position.x,
-      this.position.y,
-      32,
-      32,
-      0xff0000
-    );
-    this.body.setDepth(2);
+  private playWalkAnimation() {
+    this.anims.play({
+      key: "walk",
+      repeat: -1,
+      frameRate: 12
+    }, true)
   }
 }

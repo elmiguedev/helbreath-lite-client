@@ -11,6 +11,31 @@
         "": {
             "scaleInEditor": 1
         },
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/Ancient Ruins-Tileset-wall-8.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/Ancient Ruins-wall-8-rule.tmx": {
+            "scale": 0.64125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 720.46783625731,
+                "y": 640.9356725146199
+            }
+        },
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/Terrain - Ancient Ruins.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/TiledMap Editor Example Demo- Ancient Ruins.tmx": {
+            "scale": 1.3240625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 319.47132405003543,
+                "y": 123.8612225631343
+            }
+        },
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/Tileset-Animated Terrains-8 frames--.tsx": {
+            "scaleInDock": 1
+        },
         "maps.json": {
             "expandedGroupLayers": [
                 5
@@ -18,8 +43,8 @@
             "scale": 1.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 347.33333333333337,
-                "y": 236.66666666666669
+                "x": 346.66666666666663,
+                "y": 236
             }
         },
         "maps.json#control": {
@@ -42,7 +67,9 @@
     "project": "maps.tiled-project",
     "property.type": "object",
     "recentFiles": [
-        "maps.json"
+        "maps.json",
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/TiledMap Editor Example Demo- Ancient Ruins.tmx",
+        "C:/Users/mmoya/Downloads/EPIC RPG World Pack - [FREE Demo]Ancient Ruins (1)/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/TiledMap Editor/Ancient Ruins-wall-8-rule.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {

@@ -7,6 +7,7 @@ import { WorldMapChange } from "../entities/WorldMapChange";
 
 export class MainScene extends Phaser.Scene {
   private players: Record<string, Player>;
+  private playersGroup: Phaser.GameObjects.Group;
   private mapLabel: Phaser.GameObjects.Text;
   private tilemap: Phaser.Tilemaps.Tilemap;
   private socket: Socket;
@@ -33,10 +34,14 @@ export class MainScene extends Phaser.Scene {
   }
 
   createSocket() {
+    this.playersGroup = this.add.group({
+      runChildUpdate: true,
+    });
     this.socket = io("ws://localhost:3000");
 
     this.socket.on("world:state", (worldStatus: WorldStatus) => {
       if (!this.tilemap) {
+        console.log("createMap", worldStatus.world.id)
         this.resetWorld(worldStatus.world.id)
       }
       this.updateWorld(worldStatus);
@@ -44,8 +49,9 @@ export class MainScene extends Phaser.Scene {
     this.socket.on("player:disconnected", (id) => {
       if (this.players[id]) {
         this.players[id].destroy();
+        delete this.players[id];
+        this.playersGroup.remove(this.players[id]);
       }
-      delete this.players[id];
     })
     this.socket.on("player:connected", (data) => {
       // TODO: este deberia ser solo creacion
@@ -65,10 +71,11 @@ export class MainScene extends Phaser.Scene {
   }
 
   checkInput() {
+    var worldPosition = this.cameras.main.getWorldPoint(this.input.x, this.input.y);
     if (this.input.mousePointer.isDown) {
       this.socket.emit("player:move", {
-        x: this.input.mousePointer.worldX,
-        y: this.input.mousePointer.worldY
+        x: worldPosition.x,
+        y: worldPosition.y
       })
     }
   }
@@ -92,12 +99,15 @@ export class MainScene extends Phaser.Scene {
           name: player.name,
           position: player.position,
           scene: this
-        })
+        });
+        this.playersGroup.add(this.players[player.id]);
         if (player.id === this.socket.id) {
-          this.cameras.main.startFollow(this.players[player.id].body);
+          this.cameras.main.startFollow(this.players[player.id]);
+          this.cameras.main.setZoom(3);
         }
       } else {
-        this.players[player.id].setPosition(player.position);
+        this.players[player.id].setPosition(player.position.x, player.position.y);
+        this.players[player.id].target = player.target;
       }
     })
   }
@@ -115,8 +125,10 @@ export class MainScene extends Phaser.Scene {
   }
 
   createMap(worldMapId: string) {
-    this.tilemap = this.add.tilemap("map");
+    console.log("createMap", worldMapId)
+    this.tilemap = this.add.tilemap(worldMapId);
     const terrainTileset = this.tilemap.addTilesetImage("terrain", "terrain");
-    const bgLayer = this.tilemap.createLayer(`${worldMapId}/bg_1`, terrainTileset, 0, 0).setDepth(1);
+    const floorLayer = this.tilemap.createLayer(`floor`, [terrainTileset]).setDepth(1);
+    console.log(floorLayer)
   }
 }

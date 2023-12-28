@@ -4,8 +4,8 @@ import { BootloaderScene } from "./scenes/BootloaderScene";
 
 new Game({
   type: Phaser.AUTO,
-  width: 640,
-  height: 480,
+  width: 1280,
+  height: 720,
   render: {
     pixelArt: true
   },
