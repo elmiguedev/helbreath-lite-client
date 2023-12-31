@@ -81,6 +81,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   resetWorld(worldMapId: string) {
+    console.log("reseteamos el mundo", worldMapId)
     this.clearWorld();
     this.createMap(worldMapId);
     this.clearPlayers();
