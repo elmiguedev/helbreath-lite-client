@@ -5,6 +5,8 @@ import PlayerPng from "../assets/sprites/player/player.png";
 import PlayerJson from "../assets/sprites/player/player.json";
 import TerrainPng from "../assets/tilesets/terrain/terrain.png";
 
+import DummyPng from "../assets/sprites/monsters/dummy/dummy.png";
+
 export class BootloaderScene extends Phaser.Scene {
   constructor() {
     super("BootloaderScene");
@@ -16,6 +18,8 @@ export class BootloaderScene extends Phaser.Scene {
     this.load.image("terrain", TerrainPng);
 
     this.load.aseprite("player", PlayerPng, PlayerJson);
+
+    this.load.image("dummy", DummyPng);
 
     this.load.once("complete", () => {
       this.scene.start("MainScene");

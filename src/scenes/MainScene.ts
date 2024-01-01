@@ -4,9 +4,11 @@ import { Player } from "../entities/Player";
 import { WorldStatus } from "../entities/WorldStatus";
 import { WorldMap } from "../entities/WorldMap";
 import { WorldMapChange } from "../entities/WorldMapChange";
+import { Monster } from "../entities/monsters/Monster";
 
 export class MainScene extends Phaser.Scene {
   private players: Record<string, Player>;
+  private monsters: Record<string, Phaser.GameObjects.Sprite>;
   private playersGroup: Phaser.GameObjects.Group;
   private mapLabel: Phaser.GameObjects.Text;
   private tilemap: Phaser.Tilemaps.Tilemap;
@@ -16,6 +18,7 @@ export class MainScene extends Phaser.Scene {
     super("MainScene");
 
     this.players = {};
+    this.monsters = {};
   }
 
   create() {
@@ -89,6 +92,7 @@ export class MainScene extends Phaser.Scene {
 
   updateWorld(worldStatus: WorldStatus) {
     this.updatePlayers(worldStatus.players);
+    this.updateMonsters(worldStatus.monsters);
   }
 
   updatePlayers(players: Player[]) {
@@ -131,5 +135,24 @@ export class MainScene extends Phaser.Scene {
     const terrainTileset = this.tilemap.addTilesetImage("terrain", "terrain");
     const floorLayer = this.tilemap.createLayer(`floor`, [terrainTileset]).setDepth(1);
     console.log(floorLayer)
+  }
+
+  updateMonsters(monsters: Monster[]) {
+    for (const m of monsters) {
+      let monster = this.monsters[m.id];
+      if (!monster) {
+        monster = this.createMonster(m);
+      }
+      monster.setPosition(m.position.x, m.position.y);
+    }
+  }
+
+  createMonster(monster: Monster) {
+    console.log("creando un monster", monster)
+    const monsterSprite = this.add.sprite(monster.position.x, monster.position.y, monster.type);
+    this.monsters[monster.id] = monsterSprite;
+    monsterSprite.setDepth(monster.position.y);
+    monsterSprite.setOrigin(0.5, 1);
+    return monsterSprite;
   }
 }

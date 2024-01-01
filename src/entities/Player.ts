@@ -14,6 +14,7 @@ export class Player extends Phaser.GameObjects.Sprite {
   constructor(props: PlayerProps) {
     super(props.scene, props.position.x, props.position.y, "player");
     this.scene.add.existing(this);
+    this.setOrigin(0, 1);
 
     this.setDepth(10);
     this.anims.createFromAseprite("player");
