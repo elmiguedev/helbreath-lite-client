@@ -65,7 +65,7 @@ export class MainScene extends Phaser.Scene {
       }
     });
     this.socket.on("world:change", (change: WorldMapChange) => {
-      console.log(change)
+      console.log("EL CAMBIO", change)
       this.resetWorld(change.toWorldMapId);
     })
   }
