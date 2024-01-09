@@ -1,0 +1,1 @@
+export const PLAYER_MIN_ATTACK_DISTANCE = 32;

@@ -5,14 +5,19 @@ import { WorldStatus } from "../entities/WorldStatus";
 import { WorldMap } from "../entities/WorldMap";
 import { WorldMapChange } from "../entities/WorldMapChange";
 import { Monster } from "../entities/monsters/Monster";
+import { PLAYER_MIN_ATTACK_DISTANCE } from "../utils/constants";
 
 export class MainScene extends Phaser.Scene {
   private players: Record<string, Player>;
+  private player: Player;
   private monsters: Record<string, Phaser.GameObjects.Sprite>;
   private playersGroup: Phaser.GameObjects.Group;
   private mapLabel: Phaser.GameObjects.Text;
   private tilemap: Phaser.Tilemaps.Tilemap;
   private socket: Socket;
+  private cross: Phaser.GameObjects.Image;
+
+  private entityOver = false;
 
   constructor() {
     super("MainScene");
@@ -25,7 +30,10 @@ export class MainScene extends Phaser.Scene {
     this.createHud();
     this.createSocket();
 
-
+    // TODO: BORRAR ESTO
+    this.cross = this.add.image(0, 0, "cross");
+    this.cross.setOrigin(0.5)
+    this.cross.setDepth(2000)
   }
 
   update() {
@@ -42,9 +50,8 @@ export class MainScene extends Phaser.Scene {
     });
     this.socket = io("ws://localhost:3000");
 
-    this.socket.on("world:state", (worldStatus: WorldStatus) => {
+    this.socket.on("world:status", (worldStatus: WorldStatus) => {
       if (!this.tilemap) {
-        console.log("createMap", worldStatus.world.id)
         this.resetWorld(worldStatus.world.id)
       }
       this.updateWorld(worldStatus);
@@ -68,14 +75,28 @@ export class MainScene extends Phaser.Scene {
       }
     });
     this.socket.on("world:change", (change: WorldMapChange) => {
-      console.log("EL CAMBIO", change)
       this.resetWorld(change.toWorldMapId);
+    })
+
+    this.socket.on("monster:killed", (data) => {
+      console.log("MONSTER KILLED", data)
+      if (data) {
+        this.killMonster(data.monster.id);
+      }
+    })
+
+    this.socket.on("player:attack", (data) => {
+      console.log("VIENE EL ATTACK", data)
+      if (this.players[data.playerId]) {
+        this.players[data.playerId].attack({});
+      }
     })
   }
 
   checkInput() {
     var worldPosition = this.cameras.main.getWorldPoint(this.input.x, this.input.y);
-    if (this.input.mousePointer.isDown) {
+    if (this.input.mousePointer.isDown && !this.entityOver) {
+      this.cross.setPosition(worldPosition.x, worldPosition.y);
       this.socket.emit("player:move", {
         x: worldPosition.x,
         y: worldPosition.y
@@ -84,7 +105,6 @@ export class MainScene extends Phaser.Scene {
   }
 
   resetWorld(worldMapId: string) {
-    console.log("reseteamos el mundo", worldMapId)
     this.clearWorld();
     this.createMap(worldMapId);
     this.clearPlayers();
@@ -107,6 +127,7 @@ export class MainScene extends Phaser.Scene {
         });
         this.playersGroup.add(this.players[player.id]);
         if (player.id === this.socket.id) {
+          this.player = this.players[player.id];
           this.cameras.main.startFollow(this.players[player.id]);
           this.cameras.main.setZoom(3);
         }
@@ -148,11 +169,41 @@ export class MainScene extends Phaser.Scene {
   }
 
   createMonster(monster: Monster) {
-    console.log("creando un monster", monster)
-    const monsterSprite = this.add.sprite(monster.position.x, monster.position.y, monster.type);
-    this.monsters[monster.id] = monsterSprite;
-    monsterSprite.setDepth(monster.position.y);
-    monsterSprite.setOrigin(0.5, 1);
-    return monsterSprite;
+    if (!this.monsters[monster.id]) {
+      const monsterSprite = this.add.sprite(monster.position.x, monster.position.y, monster.type);
+      this.monsters[monster.id] = monsterSprite;
+      monsterSprite.setDepth(monster.position.y);
+      monsterSprite.setOrigin(0.5, 1);
+      monsterSprite.setInteractive({ cursor: 'pointer' });
+      monsterSprite.on("pointerover", () => {
+        this.entityOver = true;
+      })
+      monsterSprite.on("pointerout", () => {
+        this.entityOver = false;
+      })
+      monsterSprite.on("pointerdown", () => {
+        const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, monsterSprite.x, monsterSprite.y);
+        if (distance > PLAYER_MIN_ATTACK_DISTANCE) {
+          return;
+        }
+        if (!this.player.isAttacking) {
+          this.socket.emit("player:attack:monster", {
+            monsterId: monster.id
+          })
+          this.player.attack(monsterSprite);
+        }
+      })
+      return monsterSprite;
+    }
+  }
+
+  killMonster(monsterId: string) {
+    console.log("EL MONSTER PARA MATTAR", monsterId)
+    if (this.monsters[monsterId]) {
+      console.log(this.monsters[monsterId])
+      this.monsters[monsterId].destroy();
+      delete this.monsters[monsterId];
+      this.entityOver = false; // TODO:cambiar este sistema de over de las entidades
+    }
   }
 }

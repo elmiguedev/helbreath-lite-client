@@ -1,3 +1,4 @@
+import { PLAYER_MIN_ATTACK_DISTANCE } from "../utils/constants";
 import { Position } from "./Position";
 
 export interface PlayerProps {
@@ -8,13 +9,13 @@ export interface PlayerProps {
 }
 
 export class Player extends Phaser.GameObjects.Sprite {
-
+  public isAttacking = false;
   public target: any;
 
   constructor(props: PlayerProps) {
     super(props.scene, props.position.x, props.position.y, "player");
     this.scene.add.existing(this);
-    this.setOrigin(0, 1);
+    this.setOrigin(0.5, 1);
 
     this.setDepth(10);
     this.anims.createFromAseprite("player");
@@ -26,9 +27,24 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.playWalkAnimation()
       this.setFlipX(this.target.x < this.x);
     } else {
-      this.playIdleAnimation();
+      if (this.isAttacking) { // TODO: aca hay que hacer un switch o un PATRON STATE para el estado del player 
+        this.playAttackAnimation();
+      } else {
+        this.playIdleAnimation();
+      }
     }
+
     this.setDepth(this.y)
+  }
+
+  public attack(target: any) { // TODO: en el REFACTOR SACAR EL ANYYY
+    if (!this.isAttacking) {
+      this.isAttacking = true;
+      this.setFlipX(this.x > target.x);
+      this.scene.time.delayedCall(300, () => {
+        this.isAttacking = false;
+      })
+    }
   }
 
   private playIdleAnimation() {
@@ -43,7 +59,14 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.anims.play({
       key: "walk",
       repeat: -1,
-      frameRate: 12
+      frameRate: 12,
+    }, true)
+  }
+
+  private playAttackAnimation() {
+    this.anims.play({
+      key: "attack",
+      frameRate: 20,
     }, true)
   }
 }
