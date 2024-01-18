@@ -17,10 +17,10 @@
       "declarations"
     ],
     // "noEmit": true,
-    // // "noUnusedLocals": true,
-    // // "noUnusedParameters": false,
-    // // "noImplicitReturns": true,
-    // // "strictPropertyInitialization": false,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": false,
+    // "noImplicitReturns": true,
+    // "strictPropertyInitialization": false,
     "paths": {
       "~/*": [
         "./*"
@@ -30,5 +30,6 @@
   "include": [
     "src/**/*",
     "declarations.d.ts",
+    "vite.config.js"
   ]
 }

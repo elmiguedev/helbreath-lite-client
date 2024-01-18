@@ -1,6 +1,6 @@
 import { Game } from "phaser";
-import { MainScene } from "./scenes/MainScene";
 import { BootloaderScene } from "./scenes/BootloaderScene";
+import { WorldMapScene } from "./scenes/WorldMapScene";
 
 new Game({
   type: Phaser.AUTO,
@@ -18,6 +18,6 @@ new Game({
   },
   scene: [
     BootloaderScene,
-    MainScene
+    WorldMapScene
   ]
 })

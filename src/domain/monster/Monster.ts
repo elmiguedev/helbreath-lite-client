@@ -1,4 +1,4 @@
-import { Position } from "../Position";
+import { Position } from "../generic/Position";
 import { Size } from "../generic/Size";
 
 export interface Monster {

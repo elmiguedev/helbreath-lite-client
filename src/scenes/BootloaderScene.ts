@@ -25,7 +25,7 @@ export class BootloaderScene extends Phaser.Scene {
     this.load.image("cross", CrossPng);
 
     this.load.once("complete", () => {
-      this.scene.start("MainScene");
+      this.scene.start("WorldMapScene");
     })
   }
 }
