@@ -1,9 +1,12 @@
 import { Player } from "../../domain/player/Player";
+import { PlayerLevelUpLabelEntity } from "./PlayerLevelUpLabelEntity";
 
 export class PlayerEntity extends Phaser.GameObjects.Sprite {
 
   private playerState: Player;
   public isAttacking = false; // TODO: refactor esto (strategy/state pattern)
+  private levelUpLabelEntity: PlayerLevelUpLabelEntity;
+  public onLevelUpClick: Function;
 
   constructor(scene: Phaser.Scene, state: Player) {
     super(scene, state.position.x, state.position.y, "player");
@@ -14,6 +17,13 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
     this.setDepth(10);
     this.anims.createFromAseprite("player");
     this.playIdleAnimation();
+
+    this.levelUpLabelEntity = new PlayerLevelUpLabelEntity(this);
+    this.levelUpLabelEntity.onClick = () => {
+      if (this.onLevelUpClick) {
+        this.onLevelUpClick();
+      }
+    }
   }
 
   public setPlayerState(state: Player) {
@@ -30,6 +40,7 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
   public update() {
     this.updateAnimation();
     this.updateDepth();
+    this.levelUpLabelEntity.update();
   }
 
   public attack() {
@@ -42,8 +53,16 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
     }
   }
 
+  public levelUp(state: Player) {
+    this.levelUpLabelEntity.show();
+  }
+
   public updateDepth() {
     this.setDepth(this.y)
+  }
+
+  public getPlayerState(): Player {
+    return this.playerState
   }
 
   // animation methods (TODO: check strategy/state pattern for animations)
@@ -83,6 +102,11 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
       key: "attack",
       frameRate: 20,
     }, true)
+  }
+
+
+  public testHurt() {
+    this.playerState.stats.health -= 4;
   }
 
 }

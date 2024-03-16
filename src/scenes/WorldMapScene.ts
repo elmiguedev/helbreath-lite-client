@@ -1,4 +1,4 @@
-import { Scene } from "phaser";
+import { Physics, Scene } from "phaser";
 import { WorldStatus } from "../domain/world/WorldStatus";
 import { PlayerEntity } from "../entities/player/PlayerEntity";
 import { MonsterEntity } from "../entities/monsters/MonsterEntity";
@@ -7,6 +7,7 @@ import { WorldMapEntity } from "../entities/worldmap/WorldMapEntity";
 import { Player } from "../domain/player/Player";
 import { Monster } from "../domain/monster/Monster";
 import { PLAYER_MIN_ATTACK_DISTANCE } from "../utils/constants";
+import { PlayerHud } from "../huds/PlayerHud";
 
 export class WorldMapScene extends Scene {
 
@@ -16,27 +17,46 @@ export class WorldMapScene extends Scene {
   private mainPlayer: PlayerEntity;
   private players: Record<string, PlayerEntity>;
   private monsters: Record<string, MonsterEntity>;
+  private playerHud: PlayerHud;
 
   // TODO: hacerle alto refactor
   private entityOver = false;
   private cross: Phaser.GameObjects.Image;
 
+  private testKeys: {
+    life: Phaser.Input.Keyboard.Key,
+  }
 
   constructor() {
     super("WorldMapScene");
     this.players = {};
     this.monsters = {};
-    this.socketManager = new SocketManager(this);
-    this.worldMapEntity = new WorldMapEntity(this);
   }
 
   create() {
+    this.createWorldMapEntity();
     this.createCross();
+    this.createHud();
 
     const g = this.add.group({
       runChildUpdate: true,
       classType: PlayerEntity
     });
+
+    this.testKeys = {
+      life: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L),
+    }
+
+    this.createSocketManager();
+  }
+
+  private createSocketManager() {
+    this.socketManager = new SocketManager(this);
+  }
+
+  private createWorldMapEntity() {
+    this.worldMapEntity = new WorldMapEntity(this);
+
   }
 
   update() {
@@ -59,6 +79,15 @@ export class WorldMapScene extends Scene {
       this.cross.setPosition(worldPosition.x, worldPosition.y);
       this.socketManager.movePlayerNotifier.notify(worldPosition);
     }
+
+    if (this.testKeys.life.isDown) {
+      this.mainPlayer.testHurt();
+    }
+  }
+
+  private createHud() {
+    this.scene.run("PlayerHud");
+    this.playerHud = this.scene.get("PlayerHud") as PlayerHud;
   }
 
   // world status methods
@@ -107,6 +136,18 @@ export class WorldMapScene extends Scene {
     this.mainPlayer = playerEntity;
     this.cameras.main.startFollow(this.mainPlayer);
     this.cameras.main.setZoom(3);
+    this.mainPlayer.onLevelUpClick = () => {
+      this.socketManager.playerAttributesNotifier.notify({
+        strength: 0,
+        dexterity: 3,
+        intelligence: 0,
+        vitality: 0,
+        luck: 0,
+        charisma: 0,
+        magic: 0
+      })
+    }
+    if (this.playerHud) this.playerHud.setPlayer(this.mainPlayer);
   }
 
   public getPlayer(id: string) {
@@ -178,35 +219,5 @@ export class WorldMapScene extends Scene {
       }
     })
   }
-
-  // createMonster(monster: Monster) {
-  //   if (!this.monsters[monster.id]) {
-  //     const monsterSprite = this.add.sprite(monster.position.x, monster.position.y, monster.type);
-  //     this.monsters[monster.id] = monsterSprite;
-  //     monsterSprite.setDepth(monster.position.y);
-  //     monsterSprite.setOrigin(0.5, 1);
-  //     monsterSprite.setInteractive({ cursor: 'pointer' });
-  //     monsterSprite.on("pointerover", () => {
-  //       this.entityOver = true;
-  //     })
-  //     monsterSprite.on("pointerout", () => {
-  //       this.entityOver = false;
-  //     })
-  //     monsterSprite.on("pointerdown", () => {
-  //       const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, monsterSprite.x, monsterSprite.y);
-  //       if (distance > PLAYER_MIN_ATTACK_DISTANCE) {
-  //         return;
-  //       }
-  //       if (!this.player.isAttacking) {
-  //         this.socket.emit("player:attack:monster", {
-  //           monsterId: monster.id
-  //         })
-  //         this.player.attack(monsterSprite);
-  //       }
-  //     })
-  //     return monsterSprite;
-  //   }
-  // }
-
 
 }

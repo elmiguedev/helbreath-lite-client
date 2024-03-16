@@ -8,6 +8,8 @@ import { MovePlayerNotifier } from "./notifiers/MovePlayerNotifier";
 import { AttackMonsterNotifier } from "./notifiers/AttackMonsterNotifier";
 import { RemovePlayerNotifier } from "./notifiers/RemovePlayerNotifier";
 import { Position } from "../domain/generic/Position";
+import { PlayerLevelUpHandler } from "./handlers/PlayerLevelUpHandler";
+import { PlayerAttributesNotifier } from "./notifiers/PlayerAttributesNotifier";
 
 export class SocketManager {
   private scene: WorldMapScene;
@@ -16,6 +18,7 @@ export class SocketManager {
   public movePlayerNotifier: MovePlayerNotifier;
   public attackMonsterNotifier: AttackMonsterNotifier;
   public removePlayerNotifier: RemovePlayerNotifier;
+  public playerAttributesNotifier: PlayerAttributesNotifier;
 
   constructor(scene: WorldMapScene) {
     this.scene = scene;
@@ -25,10 +28,12 @@ export class SocketManager {
     new PlayerChangeMapHandler(this.socket, this.scene);
     new PlayerAttackHandler(this.socket, this.scene);
     new MonsterKilledHandler(this.socket, this.scene);
+    new PlayerLevelUpHandler(this.socket, this.scene);
 
     this.movePlayerNotifier = new MovePlayerNotifier(this.socket);
     this.attackMonsterNotifier = new AttackMonsterNotifier(this.socket);
     this.removePlayerNotifier = new RemovePlayerNotifier(this.socket);
+    this.playerAttributesNotifier = new PlayerAttributesNotifier(this.socket);
   }
 
   public getSocketId() {

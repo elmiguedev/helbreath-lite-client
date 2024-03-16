@@ -1,16 +1,17 @@
 import { Socket } from "socket.io-client";
 import { SocketMessages } from "../SocketMessages";
 import { WorldMapScene } from "../../scenes/WorldMapScene";
+import { Player } from "../../domain/player/Player";
 
-export class PlayerAttackHandler {
+export class PlayerLevelUpHandler {
   constructor(
     private readonly socket: Socket,
     private readonly worldMapScene: WorldMapScene // TODO: cambiar la escena por acciones sobre la escena (check)
   ) {
-    socket.on(SocketMessages.PLAYER_ATTACK_MESSAGE, (playerId: string) => {
-      const player = this.worldMapScene.getPlayer(playerId);
+    this.socket.on(SocketMessages.PLAYER_LEVEL_UP_MESSAGE, (playerData: Player) => {
+      const player = this.worldMapScene.getPlayer(playerData.id);
       if (player) {
-        player.attack();
+        player.levelUp(playerData);
       }
     })
   }
