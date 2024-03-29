@@ -18,6 +18,7 @@ new Game({
   },
   render: {
     pixelArt: true,
+    roundPixels: false
 
   },
   physics: {

@@ -34,9 +34,12 @@ export class WorldMapScene extends Scene {
   }
 
   create() {
+
     this.createWorldMapEntity();
     this.createCross();
     this.createHud();
+
+    this.createInput();
 
     const g = this.add.group({
       runChildUpdate: true,
@@ -56,11 +59,21 @@ export class WorldMapScene extends Scene {
 
   private createWorldMapEntity() {
     this.worldMapEntity = new WorldMapEntity(this);
+  }
 
+  private createInput() {
+    this.input.on("pointerdown", (pointer, gameObjects) => {
+      if (gameObjects.length > 0) {
+        return;
+      }
+      const worldPosition = this.cameras.main.getWorldPoint(this.input.x, this.input.y);
+      this.cross.setPosition(worldPosition.x, worldPosition.y);
+      this.cross.setDepth(worldPosition.y)
+      this.socketManager.movePlayerNotifier.notify(worldPosition);
+    })
   }
 
   update() {
-    this.checkInput();
     this.updatePlayerEntities();
   }
 
@@ -71,18 +84,6 @@ export class WorldMapScene extends Scene {
     this.cross = this.add.image(0, 0, "cross");
     this.cross.setOrigin(0.5)
     this.cross.setDepth(2000)
-  }
-
-  private checkInput() {
-    var worldPosition = this.cameras.main.getWorldPoint(this.input.x, this.input.y);
-    if (this.input.mousePointer.isDown && !this.entityOver) {
-      this.cross.setPosition(worldPosition.x, worldPosition.y);
-      this.socketManager.movePlayerNotifier.notify(worldPosition);
-    }
-
-    if (this.testKeys.life.isDown) {
-      this.mainPlayer.testHurt();
-    }
   }
 
   private createHud() {
@@ -135,19 +136,12 @@ export class WorldMapScene extends Scene {
   public setMainPlayer(playerEntity: PlayerEntity) {
     this.mainPlayer = playerEntity;
     this.cameras.main.startFollow(this.mainPlayer);
-    this.cameras.main.setZoom(3);
-    this.mainPlayer.onLevelUpClick = () => {
-      this.socketManager.playerAttributesNotifier.notify({
-        strength: 0,
-        dexterity: 3,
-        intelligence: 0,
-        vitality: 0,
-        luck: 0,
-        charisma: 0,
-        magic: 0
-      })
+    this.cameras.main.setZoom(6);
+
+    if (this.playerHud) {
+      this.playerHud.setPlayer(this.mainPlayer);
+      this.playerHud.setSocketManager(this.socketManager);
     }
-    if (this.playerHud) this.playerHud.setPlayer(this.mainPlayer);
   }
 
   public getPlayer(id: string) {

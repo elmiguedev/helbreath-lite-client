@@ -13,7 +13,7 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
     this.playerState = state;
 
     this.scene.add.existing(this);
-    this.setOrigin(0.5, 1);
+    this.setOrigin(0, 0);
     this.setDepth(10);
     this.anims.createFromAseprite("player");
     this.playIdleAnimation();
@@ -83,24 +83,24 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
 
   private playIdleAnimation() {
     this.anims.play({
-      key: "idle",
+      key: "player_idle",
       repeat: -1,
-      frameRate: 2
+      frameRate: 4
     }, true)
   }
 
   private playWalkAnimation() {
     this.anims.play({
-      key: "walk",
+      key: "player_walk",
       repeat: -1,
-      frameRate: 12,
+      frameRate: 8,
     }, true)
   }
 
   private playAttackAnimation() {
     this.anims.play({
-      key: "attack",
-      frameRate: 20,
+      key: "player_attack",
+      frameRate: 8,
     }, true)
   }
 

@@ -1,28 +1,61 @@
+import { PlayerAttributes } from "../domain/player/PlayerAttributes";
+import LevelUpButton from "../entities/hud/LevelUpButton";
+import { PlayerStatsPanel } from "../entities/hud/PlayerStatsPanel/PlayerStatsPanel";
 import { StatBar } from "../entities/hud/StatBar";
 import { StatContainer } from "../entities/hud/StatContainer";
 import { PlayerEntity } from "../entities/player/PlayerEntity";
+import { SocketManager } from "../sockets/SocketManager";
 
 export class PlayerHud extends Phaser.Scene {
-  private player: PlayerEntity
-  private txtPlayerLevel: Phaser.GameObjects.Text
-  private txtPlayerExp: Phaser.GameObjects.Text
-  private txtPlayerHp: Phaser.GameObjects.Text
-  private txtPlayerMana: Phaser.GameObjects.Text
-  private txtPlayerStamina: Phaser.GameObjects.Text
-  private txtFreeAttributesPoints: Phaser.GameObjects.Text
-  private txtPlayerAttributes: Phaser.GameObjects.Text
+  private player: PlayerEntity;
+  private socketManager: SocketManager;
+
+  private txtLocation: Phaser.GameObjects.Text;
 
   private healthContainer: StatContainer;
   private manaContainer: StatContainer;
   private expContainer: StatBar;
+  private levelUpButton: LevelUpButton;
+
+  private playerStatsPanel: PlayerStatsPanel;
 
   constructor() {
     super("PlayerHud");
   }
 
   public create() {
-    this.createTexts()
+
     this.createContainers();
+    this.createTexts()
+    this.createLevelUpButton();
+    this.createPanels();
+
+    this.createMenu();
+
+  }
+
+  private createLevelUpButton() {
+    const screenWidth = this.game.canvas.width;
+    const screenHeight = this.game.canvas.height;
+
+    this.levelUpButton = new LevelUpButton(this, {
+      x: screenWidth - 300,
+      y: screenHeight - 100
+    });
+
+    this.levelUpButton.show();
+    this.levelUpButton.onClick = () => {
+      if (!this.socketManager) return;
+      this.socketManager.playerAttributesNotifier.notify({
+        strength: 0,
+        dexterity: 3,
+        intelligence: 0,
+        vitality: 0,
+        luck: 0,
+        charisma: 0,
+        magic: 0
+      })
+    }
   }
 
   private createContainers() {
@@ -58,64 +91,50 @@ export class PlayerHud extends Phaser.Scene {
 
   }
 
+  private createPanels() {
+    this.playerStatsPanel = new PlayerStatsPanel(
+      this,
+      {
+        x: this.game.canvas.width - 500,
+        y: (this.game.canvas.height / 2) - 250
+      },
+      this.player
+    )
+    this.playerStatsPanel.hide();
+    this.playerStatsPanel.onConfirm = (stats: PlayerAttributes) => {
+      this.socketManager.playerAttributesNotifier.notify(stats);
+      this.playerStatsPanel.hide();
+    }
+  }
+
   public createTexts() {
-    this.txtPlayerLevel = this.add.text(10, 10, "Level: 0", {
-      align: "left",
-      fontSize: "24px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    });
-    this.txtPlayerExp = this.add.text(10, 30, "Exp: 0", {
-      align: "left",
-      fontSize: "24px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    });
-    this.txtPlayerHp = this.add.text(10, 50, "HP: 0", {
-      align: "left",
-      fontSize: "24px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    });
-    this.txtPlayerMana = this.add.text(10, 70, "Mana: 0", {
-      align: "left",
-      fontSize: "24px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    });
-    this.txtPlayerStamina = this.add.text(10, 90, "Stamina: 0", {
-      align: "left",
-      fontSize: "24px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    })
-    this.txtFreeAttributesPoints = this.add.text(10, 110, "Free Attributes Points: 0", {
-      align: "left",
-      fontSize: "24px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    })
-    this.txtPlayerAttributes = this.add.text(10, 140, "Attributes: ", {
-      fontSize: "20px",
-      fontStyle: "bold",
-      fontFamily: "Consolas, Courier, monospace",
-      color: "black",
-    })
+    this.txtLocation = this.add.text(
+      (this.game.canvas.width / 2) - 200,
+      this.game.canvas.height - 80,
+      "",
+      {
+        fontSize: "20px",
+        fontStyle: "bold",
+        fontFamily: "Consolas, Courier, monospace",
+        color: "black",
+      }
+    )
   }
 
   public setPlayer(player: PlayerEntity) {
-    this.player = player
+    this.player = player;
+    this.playerStatsPanel.setPlayer(player);
+  }
+
+  public setSocketManager(socketManager: SocketManager) {
+    this.socketManager = socketManager;
   }
 
   public update() {
-    this.updatePlayerStates();
+    this.updateTexts();
     this.updatePlayerContainers();
+    this.updateLevelUpButton();
+    this.playerStatsPanel.updateStats();
   }
 
   private updatePlayerContainers() {
@@ -128,23 +147,37 @@ export class PlayerHud extends Phaser.Scene {
     this.expContainer.setMaxValue(this.player.getPlayerState().stats.nextLevelExperience - this.player.getPlayerState().stats.baseLevelExperience);
   }
 
-  private updatePlayerStates() {
+  private updateTexts() {
     if (!this.player) return
-    this.txtPlayerLevel.setText(`Level: ${this.player.getPlayerState().stats.level}`);
-    this.txtPlayerExp.setText(`Exp: ${this.player.getPlayerState().stats.experience}`);
-    this.txtPlayerHp.setText(`HP: ${this.player.getPlayerState().stats.health}`);
-    this.txtPlayerMana.setText(`Mana: ${this.player.getPlayerState().stats.mana}`);
-    this.txtPlayerStamina.setText(`Stamina: ${this.player.getPlayerState().stats.stamina}`);
-    this.txtFreeAttributesPoints.setText(`Free Attributes Points: ${this.player.getPlayerState().stats.freeLevelPoints}`);
-    this.txtPlayerAttributes.setText(`Attributes: 
-  - str: ${this.player.getPlayerState().attributes.strength}
-  - dex: ${this.player.getPlayerState().attributes.dexterity}
-  - int: ${this.player.getPlayerState().attributes.intelligence}
-  - vit: ${this.player.getPlayerState().attributes.vitality}
-  - mag: ${this.player.getPlayerState().attributes.magic}
-  - chr: ${this.player.getPlayerState().attributes.charisma}
-    `);
+
+    const playerX = Math.floor(this.player.getPlayerState().position.x);
+    const playerY = Math.floor(this.player.getPlayerState().position.y);
+    const worldMapId = this.player.getPlayerState().worldMapId;
+
+    this.txtLocation.setText(`${worldMapId} (${playerX}, ${playerY})`);
   }
 
+  private updateLevelUpButton() {
+    if (!this.player) return;
+    if (this.player.getPlayerState().stats.freeLevelPoints > 0) {
+      this.levelUpButton.show();
+    } else {
+      this.levelUpButton.hide();
+    }
+  }
+
+  private createMenu() {
+    const statMenu = this.add
+      .rectangle(
+        this.game.canvas.width / 2 + 100,
+        this.game.canvas.height - 90
+        , 30, 30, 0x999999)
+      .setOrigin(0);
+
+    statMenu.setInteractive();
+    statMenu.on("pointerdown", () => {
+      this.playerStatsPanel.show();
+    })
+  }
 
 }
