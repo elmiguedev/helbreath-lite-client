@@ -17,7 +17,7 @@ export class WorldMapScene extends Scene {
   private mainPlayer: PlayerEntity;
   private players: Record<string, PlayerEntity>;
   private monsters: Record<string, MonsterEntity>;
-  private playerHud: PlayerHud;
+  public playerHud: PlayerHud;
 
   // TODO: hacerle alto refactor
   private entityOver = false;
@@ -37,7 +37,6 @@ export class WorldMapScene extends Scene {
 
     this.createWorldMapEntity();
     this.createCross();
-    this.createHud();
 
     this.createInput();
 
@@ -51,6 +50,8 @@ export class WorldMapScene extends Scene {
     }
 
     this.createSocketManager();
+    this.createHud();
+
   }
 
   private createSocketManager() {
@@ -82,13 +83,15 @@ export class WorldMapScene extends Scene {
 
   private createCross() {
     this.cross = this.add.image(0, 0, "cross");
-    this.cross.setOrigin(0.5)
+    this.cross.setOrigin(0.5, 0.5)
     this.cross.setDepth(2000)
+    this.cross.setScale(3);
   }
 
   private createHud() {
     this.scene.run("PlayerHud");
     this.playerHud = this.scene.get("PlayerHud") as PlayerHud;
+    this.playerHud.setSocketManager(this.socketManager);
   }
 
   // world status methods
@@ -136,11 +139,10 @@ export class WorldMapScene extends Scene {
   public setMainPlayer(playerEntity: PlayerEntity) {
     this.mainPlayer = playerEntity;
     this.cameras.main.startFollow(this.mainPlayer);
-    this.cameras.main.setZoom(6);
+    this.cameras.main.setBackgroundColor(0x90c18a);
 
     if (this.playerHud) {
       this.playerHud.setPlayer(this.mainPlayer);
-      this.playerHud.setSocketManager(this.socketManager);
     }
   }
 

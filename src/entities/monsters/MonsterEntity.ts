@@ -17,6 +17,7 @@ export class MonsterEntity extends Phaser.GameObjects.Sprite {
     this.setDepth(this.monsterState.position.y);
     this.setOrigin(0.5, 1);
     this.setInteractive({ cursor: 'pointer' });
+    this.setScale(6)
 
     this.on("pointerover", () => {
       this.onPointerOver && this.onPointerOver();

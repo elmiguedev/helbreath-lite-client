@@ -9,10 +9,9 @@ export class PlayerLevelUpHandler {
     private readonly worldMapScene: WorldMapScene // TODO: cambiar la escena por acciones sobre la escena (check)
   ) {
     this.socket.on(SocketMessages.PLAYER_LEVEL_UP_MESSAGE, (playerData: Player) => {
-      // const player = this.worldMapScene.getPlayer(playerData.id);
-      // if (player) {
-      //   player.levelUp(playerData);
-      // } // TODO: aca hay que hacer que suene en el HUD
+      if (playerData) {
+        this.worldMapScene.playerHud.showLevelUpButton();
+      }
     })
   }
 }
