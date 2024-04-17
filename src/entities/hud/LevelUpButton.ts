@@ -2,15 +2,13 @@ import { Scene } from "phaser";
 import { Position } from "../../domain/generic/Position";
 
 export default class LevelUpButton extends Phaser.GameObjects.Text {
-
-  private TXT_Y_OFFSET = 40;
   private blinkTimer: Phaser.Time.TimerEvent;
   public onClick: Function;
 
   constructor(scene: Scene, position: Position) {
     super(scene, position.x, position.y, "LEVEL UP", {
       align: "center",
-      fontSize: "48px",
+      fontSize: "32px",
       fontStyle: "bold",
       fontFamily: "Consolas, Courier, monospace",
       color: "yellow"

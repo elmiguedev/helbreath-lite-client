@@ -17,7 +17,6 @@ export class PlayerEntity extends Phaser.GameObjects.Sprite {
     this.setDepth(10);
     this.anims.createFromAseprite("player");
     this.playIdleAnimation();
-    this.setScale(6);
     this.setDisplayOrigin(12, 16)
 
     this.levelUpLabelEntity = new PlayerLevelUpLabelEntity(this);

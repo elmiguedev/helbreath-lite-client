@@ -57,13 +57,12 @@ export class UiStatBar {
 
   private createBackground() {
     this.background = this.scene.add.rectangle(
-      this.position.x + 6,
-      this.position.y + 6,
+      this.position.x + 4,
+      this.position.y,
       this.size.width - 2,
       this.size.height - 2,
       0x9badb7
     );
-    this.background.setScale(6);
     this.background.setOrigin(0);
     this.background.setInteractive();
 
@@ -74,12 +73,11 @@ export class UiStatBar {
       0,
       this.size.width,
       this.size.height,
-      3,
-      3,
-      3,
-      3
+      12,
+      12,
+      12,
+      12
     );
-    this.border.setScale(6);
     this.border.setOrigin(0);
     this.border.setDepth(this.background.depth + 2);
     this.border.setInteractive();
@@ -88,21 +86,20 @@ export class UiStatBar {
 
   private createBar() {
     this.bar = this.scene.add.rectangle(
-      this.position.x + 6,
-      this.position.y + 6,
+      this.position.x + 4,
+      this.position.y,
       this.size.width - 2,
       this.size.height - 2,
       this.color
     );
-    this.bar.setScale(6);
     this.bar.setOrigin(0);
     this.bar.setDepth(this.background.depth + 1)
   }
 
   private createLabel() {
     this.label = this.scene.add.text(
-      this.position.x + this.size.width * 6 / 2,
-      this.position.y + this.size.height * 6 / 2,
+      this.position.x + this.size.width / 2,
+      this.position.y + this.size.height / 2,
       `${this.value}`,
       {
         color: "white",
@@ -118,7 +115,7 @@ export class UiStatBar {
   }
 
   private updateBarSize() {
-    this.bar.displayWidth = (this.value / this.maxValue) * (this.size.width * 6 - 12);
+    this.bar.displayWidth = (this.value / this.maxValue) * (this.size.width - 12);
     this.label.setText(`${this.value}`)
     this.label.setVisible(this.showLabel)
   }

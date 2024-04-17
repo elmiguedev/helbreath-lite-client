@@ -1,4 +1,4 @@
-import { Physics, Scene } from "phaser";
+import { Scene } from "phaser";
 import { WorldStatus } from "../domain/world/WorldStatus";
 import { PlayerEntity } from "../entities/player/PlayerEntity";
 import { MonsterEntity } from "../entities/monsters/MonsterEntity";

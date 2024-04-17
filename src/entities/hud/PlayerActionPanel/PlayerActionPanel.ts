@@ -27,7 +27,7 @@ export class PlayerActionPanel extends PlayerPanel {
     this.actionPanel = new UiPanel(
       this.scene,
       this.position,
-      { width: 102, height: 22 }
+      { width: 408, height: 88 }
     );
     this.actionPanel.enableCloseButton(false);
   }
@@ -35,8 +35,8 @@ export class PlayerActionPanel extends PlayerPanel {
   private createExperienceBar() {
     this.xpBar = new UiStatBar(
       this.scene,
-      { x: this.position.x, y: this.position.y - 42 },
-      { width: 102, height: 6 },
+      { x: this.position.x, y: this.position.y - 24 },
+      { width: 408, height: 20 },
       0xfbf236,
       0,
       0,

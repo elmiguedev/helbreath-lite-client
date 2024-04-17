@@ -1,5 +1,4 @@
 import { Position } from "../../../domain/generic/Position";
-import { MAP_TILE_SIZE_SCALE_FACTOR } from "../../../utils/constants";
 
 export class LevelSetLabel extends Phaser.GameObjects.Container {
   private label: string;
@@ -33,7 +32,7 @@ export class LevelSetLabel extends Phaser.GameObjects.Container {
       this.label,
       {
         color: "white",
-        fontSize: "28px",
+        fontSize: "24px",
         align: "center",
         fontStyle: "bold",
         fontFamily: "Consolas, Courier, monospace"
@@ -44,7 +43,6 @@ export class LevelSetLabel extends Phaser.GameObjects.Container {
 
   private createBackground() {
     this.background = this.scene.add.image(0, 0, 'uiLevelSetLabel');
-    this.background.setScale(MAP_TILE_SIZE_SCALE_FACTOR);
     this.add(this.background);
     this.background.setPosition(200, 0);
     this.background.setOrigin(0, 0.5);
@@ -53,11 +51,11 @@ export class LevelSetLabel extends Phaser.GameObjects.Container {
 
   private createValue() {
     this.txtValue = this.scene.add.text(
-      260, 0,
+      220, 0,
       this.value.toString(),
       {
         color: "white",
-        fontSize: "28px",
+        fontSize: "24px",
         align: "center",
         fontStyle: "bold",
         fontFamily: "Consolas, Courier, monospace"

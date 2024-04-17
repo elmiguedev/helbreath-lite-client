@@ -4,7 +4,6 @@ import { PlayerMenuPanel } from "../entities/hud/PlayerMenuPanel/PlayerMenuPanel
 import { PlayerStatsPanel } from "../entities/hud/PlayerStatsPanel/PlayerStatsPanel";
 import { PlayerEntity } from "../entities/player/PlayerEntity";
 import { SocketManager } from "../sockets/SocketManager";
-import { MAP_TILE_SIZE_SCALE_FACTOR } from "../utils/constants";
 
 export class PlayerHud extends Phaser.Scene {
   private player: PlayerEntity;
@@ -38,7 +37,7 @@ export class PlayerHud extends Phaser.Scene {
   }
 
   private createPlayerStatsPanel() {
-    const baseY = this.game.canvas.height - 200
+    const baseY = this.game.canvas.height - 110
     this.playerStatsPanel = new PlayerStatsPanel(
       this,
       {
@@ -51,11 +50,11 @@ export class PlayerHud extends Phaser.Scene {
 
   private createPlayerActionPanel() {
     const centerX = this.game.canvas.width / 2
-    const baseY = this.game.canvas.height - 180
+    const baseY = this.game.canvas.height - 120
     this.playerActionPanel = new PlayerActionPanel(
       this,
       {
-        x: centerX - 51 * MAP_TILE_SIZE_SCALE_FACTOR,
+        x: centerX - 204,
         y: baseY
       },
       this.player
@@ -63,8 +62,8 @@ export class PlayerHud extends Phaser.Scene {
   }
 
   private createPlayerMenuPanel() {
-    const x = this.game.canvas.width - 200;
-    const y = this.game.canvas.height - 100;
+    const x = this.game.canvas.width - 140;
+    const y = this.game.canvas.height - 70;
 
     this.playerMenuPanel = new PlayerMenuPanel(
       this,
@@ -72,6 +71,7 @@ export class PlayerHud extends Phaser.Scene {
         x,
         y
       },
+      this.player
     )
 
     this.playerMenuPanel.setSocketManager(this.socketManager);

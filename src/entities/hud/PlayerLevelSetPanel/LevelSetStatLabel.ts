@@ -1,6 +1,5 @@
 import { Scene } from "phaser";
 import { Position } from "../../../domain/generic/Position";
-import { MAP_TILE_SIZE_SCALE_FACTOR } from "../../../utils/constants";
 import { LevelSetLabel } from "./LevelSetLabel";
 
 export class LevelSetStatLabel extends Phaser.GameObjects.Container {
@@ -68,13 +67,12 @@ export class LevelSetStatLabel extends Phaser.GameObjects.Container {
 
   private createButtons() {
     this.increaseButton = this.scene.add.image(
-      350,
+      300,
       0,
       'uiLevelSetButtons',
       0
     );
     this.add(this.increaseButton)
-    this.increaseButton.setScale(MAP_TILE_SIZE_SCALE_FACTOR)
     this.increaseButton.setOrigin(0, 0.5);
     this.increaseButton.setInteractive({ cursor: "pointer" });
     this.increaseButton.on('pointerdown', () => {
@@ -82,13 +80,12 @@ export class LevelSetStatLabel extends Phaser.GameObjects.Container {
     })
 
     this.decreaseButton = this.scene.add.image(
-      410,
+      340,
       0,
       'uiLevelSetButtons',
       1
     );
     this.add(this.decreaseButton)
-    this.decreaseButton.setScale(MAP_TILE_SIZE_SCALE_FACTOR)
     this.decreaseButton.setOrigin(0, 0.5);
     this.decreaseButton.setInteractive({ cursor: "pointer" });
     this.decreaseButton.on('pointerdown', () => {

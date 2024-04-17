@@ -41,8 +41,8 @@ export class PlayerStatsPanel extends PlayerPanel {
   private createHealthBar() {
     this.hpBar = new UiStatBar(
       this.scene,
-      { x: this.position.x, y: this.position.y + 42 },
-      { width: 42, height: 9 },
+      { x: this.position.x, y: this.position.y },
+      { width: 168, height: 36 },
       0xd95763,
       0
     );
@@ -51,8 +51,8 @@ export class PlayerStatsPanel extends PlayerPanel {
   private createManaBar() {
     this.manaBar = new UiStatBar(
       this.scene,
-      { x: this.position.x, y: this.position.y + 102 },
-      { width: 42, height: 9 },
+      { x: this.position.x, y: this.position.y + 44 },
+      { width: 168, height: 36 },
       0x639bff,
       0
     )

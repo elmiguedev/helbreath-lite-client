@@ -34,8 +34,8 @@ export class UiPanel extends Phaser.GameObjects.Container {
 
   protected getCenterPosition() {
     return {
-      x: this.size.width * 6 / 2,
-      y: this.size.height * 6 / 2
+      x: this.size.width / 2,
+      y: this.size.height / 2
     }
   }
 
@@ -52,7 +52,6 @@ export class UiPanel extends Phaser.GameObjects.Container {
       16,
       16
     );
-    background.setScale(6);
     background.setOrigin(0);
     background.setInteractive();
     this.add(background);
@@ -67,7 +66,6 @@ export class UiPanel extends Phaser.GameObjects.Container {
       "uiPanelTitle"
     );
     titleContainer.setOrigin(0);
-    titleContainer.setScale(6);
     titleContainer.setInteractive();
     titleContainer.setPosition(
       this.getCenterPosition().x - titleContainer.displayWidth / 2,
@@ -98,10 +96,9 @@ export class UiPanel extends Phaser.GameObjects.Container {
       "uiPanelTitleCloseButtonPng"
     );
     this.closeButton.setOrigin(0);
-    this.closeButton.setScale(6);
     this.closeButton.setPosition(
-      this.size.width * 6 - 6 - this.closeButton.displayWidth / 2,
-      -this.closeButton.displayHeight / 2 + 6
+      this.size.width - 4 - this.closeButton.displayWidth / 2,
+      -this.closeButton.displayHeight / 2 + 4
     );
 
     this.closeButton.setInteractive({ cursor: "pointer" });

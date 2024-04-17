@@ -17,7 +17,6 @@ export class WorldMapEntity {
     // this.tilemap.setBaseTileSize(96, 96);
 
     const floorLayer = this.tilemap.createLayer(`floor`, [terrainTileset]).setDepth(1);
-    floorLayer.setScale(6)
   }
 
   public changeMap(worldMapId: string) {

@@ -28,9 +28,9 @@ export class BootloaderScene extends Phaser.Scene {
     this.load.image("uiPanel", UiPanelPng);
     this.load.image("uiPanelTitle", UiPanelTitlePng);
     this.load.image("uiPanelTitleCloseButtonPng", UiPanelTitleCloseButtonPng);
-    this.load.spritesheet("uiMenuButtons", UiMenuButtonsPng, { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet("uiLevelSetButtons", LevelSetButtons, { frameWidth: 9, frameHeight: 9 });
-    this.load.spritesheet("uiPanelButton", PanelButonPng, { frameWidth: 48, frameHeight: 16 });
+    this.load.spritesheet("uiMenuButtons", UiMenuButtonsPng, { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet("uiLevelSetButtons", LevelSetButtons, { frameWidth: 36, frameHeight: 36 });
+    this.load.spritesheet("uiPanelButton", PanelButonPng, { frameWidth: 192, frameHeight: 64 });
     this.load.image("uiLevelSetLabel", LevelSetLabel);
     this.load.image("uiStatBar", UiStatBarPng);
 
